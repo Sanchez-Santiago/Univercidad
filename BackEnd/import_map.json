@@ -1,0 +1,7 @@
+{
+  "imports": {
+    "oak": "https://deno.land/x/oak@v10.6.0/mod.ts",
+    "zod": "https://esm.sh/zod@3.22.4",
+    "mysql": "https://deno.land/x/mysql@v2.12.1/mod.ts"
+  }
+}
