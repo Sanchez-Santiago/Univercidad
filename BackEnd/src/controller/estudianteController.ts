@@ -1,95 +1,144 @@
-import { ControllerInterface } from "./controllerInterface.ts";
+// src/controllers/EstudianteController.ts
+import { ModelDB } from "../interfaces/Model.ts";
+import { ControllerInterface } from "../interfaces/ControllerInterface.ts";
+import { EstudianteSchema } from "../schemas/estudiante.ts";
 import { z } from "https://esm.sh/zod@3.22.4";
-import { EstudianteSchema } from "../schemes/estudiante.ts";
-import { EstudianteModel } from "../model/EstudianteModel.ts";
 
 export type Estudiante = z.infer<typeof EstudianteSchema>;
 
 export class EstudianteController implements ControllerInterface<Estudiante> {
-  private estudianteModel: EstudianteModel;
-  constructor(estudianteModel: EstudianteModel) {
-    this.estudianteModel = estudianteModel;
-  }
+  constructor(private model: ModelDB<Estudiante>) {}
 
-  async getAll(name: string, page: number): Promise<Estudiante[]> {
-    if (!page) {
-      page = 0;
-      const estudiantes = await this.estudianteModel.getAll({ name, page });
-      return estudiantes;
+  /**
+   * Obtiene todos los estudiantes con paginación y filtrado opcional
+   */
+  async getAll(params: {
+    name?: string;
+    page?: number;
+    limit?: number;
+    facultad?: string;
+    carrera?: string;
+  }): Promise<Estudiante[]> {
+    try {
+      const list = await this.model.getAll(params);
+      return list ?? [];
+    } catch (err) {
+      console.error("[EstudianteController#getAll]", err);
+      throw new Error("Error al obtener lista de estudiantes");
     }
-    const estudiantes = this.estudianteModel.getName({ name, page });
-    return estudiantes;
   }
 
-  async getById({ id }: { id: string }): Promise<Estudiante> {
-    const estudiante = await this.estudianteModel.getById({ id });
-    if (!estudiante) {
-      throw new Error("Estudiante no encontrada");
+  /** Obtiene un estudiante por ID */
+  async getById(params: { id: string }): Promise<Estudiante> {
+    try {
+      const entity = await this.model.getById(params);
+      if (!entity) throw new Error("Estudiante no encontrado");
+      return entity;
+    } catch (err) {
+      console.error("[EstudianteController#getById]", err);
+      throw new Error("Error al buscar estudiante por ID");
     }
-    return estudiante;
   }
 
-  async getByEmail({ email }: { email: string }): Promise<Estudiante> {
-    const estudiante = await this.estudianteModel.getByEmail({ email });
-    if (!estudiante) {
-      throw new Error("Estudiante no encontrada");
+  /** Obtiene un estudiante por email */
+  async getByEmail(params: { email: string }): Promise<Estudiante> {
+    try {
+      const entity = await this.model.getByEmail(params);
+      if (!entity) throw new Error("Estudiante no encontrado");
+      return entity;
+    } catch (err) {
+      console.error("[EstudianteController#getByEmail]", err);
+      throw new Error("Error al buscar estudiante por email");
     }
-    return estudiante;
   }
 
-  async getByName({ name }: { name: string }): Promise<Estudiante[]> {
-    const estudiantes = await this.estudianteModel.getName({ name });
-    return estudiantes;
+  /** Busca estudiantes por nombre con paginación */
+  async getByName(params: {
+    name: string;
+    page?: number;
+    limit?: number;
+  }): Promise<Estudiante[]> {
+    try {
+      // Se corrige llamada al método del modelo
+      const results = await this.model.getName(params);
+      return results ?? [];
+    } catch (err) {
+      console.error("[EstudianteController#getByName]", err);
+      throw new Error("Error al buscar estudiantes por nombre");
+    }
   }
 
+  /** Obtiene un estudiante por DNI */
   async getByDni({ dni }: { dni: string }): Promise<Estudiante> {
-    const estudiante = await this.estudianteModel.getByDni({ dni });
-    if (!estudiante) {
-      throw new Error("Estudiante no encontrada");
+    try {
+      const entity = await this.model.getByDni({ dni });
+      if (!entity) throw new Error("Estudiante no encontrado");
+      return entity;
+    } catch (err) {
+      console.error("[EstudianteController#getByDni]", err);
+      throw new Error("Error al buscar estudiante por DNI");
     }
-    return estudiante;
   }
 
-  async create({
-    data,
-  }: {
-    data: z.infer<typeof EstudianteSchema>;
-  }): Promise<Estudiante> {
-    // Verificar por DNI (campo único)
-    if (await this.estudianteModel.getByDni({ dni: data.dni })) {
-      throw new Error("Ya existe un estudiante con este DNI");
-    }
+  /** Crea un nuevo estudiante */
+  async create(params: { data: Estudiante }): Promise<Estudiante> {
+    try {
+      const input = EstudianteSchema.parse(params);
 
-    // Verificar por email (opcional, si también es único)
-    if (await this.estudianteModel.getByEmail({ email: data.email })) {
-      throw new Error("Ya existe un estudiante con este email");
-    }
+      if (await this.model.getByDni({ dni: input.dni })) {
+        throw new Error("Ya existe un estudiante con este DNI");
+      }
+      if (await this.model.getByEmail({ email: input.email })) {
+        throw new Error("Ya existe un estudiante con este email");
+      }
 
-    const input = EstudianteSchema.parse(data);
-    return this.estudianteModel.add({ input });
+      return await this.model.add({ input });
+    } catch (err) {
+      console.error("[EstudianteController#create]", err);
+      throw err;
+    }
   }
 
-  async update({
-    id,
-    data,
-  }: {
+  /** Actualiza un estudiante existente */
+  async update(params: {
     id: string;
-    data: Estudiante;
+    data: Partial<Estudiante>;
   }): Promise<Estudiante> {
-    const estudiante = await this.estudianteModel.getById({ id });
-    if (!estudiante) {
-      throw new Error("Estudiante no encontrada");
+    try {
+      const existing = await this.model.getById(params);
+      if (!existing) throw new Error("Estudiante no encontrado");
+      const esstudiante = EstudianteSchema.parse(params.data);
+      return await this.model.update({ id: params.id, input: esstudiante });
+    } catch (err) {
+      console.error("[EstudianteController#update]", err);
+      throw new Error("Error al actualizar estudiante");
     }
-    const input = EstudianteSchema.parse(data);
-    this.estudianteModel.update({ id, input });
-    return input;
   }
 
+  /** Elimina un estudiante */
   async delete({ id }: { id: string }): Promise<{ success: boolean }> {
-    if (await this.estudianteModel.delete({ id })) {
-      return { success: true };
-    } else {
-      return { success: false };
+    try {
+      const success = await this.model.delete({ id });
+      return { success };
+    } catch (err) {
+      console.error("[EstudianteController#delete]", err);
+      throw new Error("Error al eliminar estudiante");
+    }
+  }
+
+  /** Busca estudiantes por campo específico */
+  async searchByField<K extends keyof Estudiante>({
+    field,
+    value,
+  }: {
+    field: K;
+    value: Estudiante[K];
+  }): Promise<Estudiante[]> {
+    try {
+      return await this.model.searchByField({ field, value });
+    } catch (err) {
+      console.error("[EstudianteController#searchByField]", err);
+      throw new Error(`Error al buscar por campo ${field}`);
     }
   }
 }

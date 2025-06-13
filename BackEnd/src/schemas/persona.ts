@@ -1,7 +1,12 @@
 import { z } from "https://esm.sh/zod@3.22.4";
 
 export const PersonaSchema = z.object({
-  idpersona: z.string().uuid({ message: "Debe ser un UUID válido" }).optional(), // Opcional si lo genera la DB, o requerido si viene del cliente
+  idpersona: z.string().uuid({ message: "Debe ser un UUID válido" }), // Opcional si lo genera la DB, o requerido si viene del cliente
+
+  password: z
+    .string()
+    .min(8, { message: "La contraseña debe tener al menos 8 caracteres" })
+    .max(300, { message: "La contraseña no puede superar los 300 caracteres" }),
 
   nombre: z
     .string()

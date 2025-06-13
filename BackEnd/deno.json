@@ -1,6 +1,7 @@
 {
   "importMap": "./import_map.json",
   "tasks": {
-    "start": "deno run --allow-net --watch src/main.ts"
+    "start": "deno run --allow-net --watch src/main.ts",
+    "dev": "deno run --allow-net --allow-env src/main.ts"
   }
 }
