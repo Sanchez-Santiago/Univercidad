@@ -1,7 +1,19 @@
-import { Application } from "https://deno.land/x/oak/mod.ts";
+import { Application } from "oak";
 import profesorRouter from "./router/profesorRouter.ts";
 import estudianteRouter from "./router/estudianteRouter.ts";
 import routerHome from "./router/routerHome.ts";
+import { Models } from "./models/ModelsMySQL.ts";
+
+// Instanciar los modelos
+const models = new Models();
+await models.init(); // 👈 MUY IMPORTANTE
+const estudianteModel = models.estudianteModel;
+if (
+  !models.estudianteModel ||
+  typeof models.estudianteModel.getAll !== "function"
+) {
+  throw new Error("EstudianteModel no fue inicializado correctamente");
+}
 
 const app = new Application();
 
@@ -22,8 +34,8 @@ app.use(routerHome.allowedMethods());
 app.use(profesorRouter.routes());
 app.use(profesorRouter.allowedMethods());
 
-app.use(estudianteRouter.routes());
-app.use(estudianteRouter.allowedMethods());
+app.use(estudianteRouter(estudianteModel).routes());
+app.use(estudianteRouter(estudianteModel).allowedMethods());
 
 console.log(`Servidor corriendo en http://localhost:${PORT}`);
 

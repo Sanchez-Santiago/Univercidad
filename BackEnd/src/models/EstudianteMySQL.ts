@@ -1,18 +1,12 @@
 import { ModelDB } from "../interfaces/Model.ts";
-import { Client } from "https://deno.land/x/mysql@v2.12.1/mod.ts";
+import { Client } from "mysql";
 import { Estudiante, EstudianteUpdateInput } from "../schemas/estudiante.ts";
 
 export class EstudianteModel implements ModelDB<Estudiante> {
   connection: Client;
 
-  constructor() {
-    this.connection = new Client();
-    this.connection.connect({
-      hostname: Deno.env.get("DB_HOST"),
-      username: Deno.env.get("DB_USER"),
-      db: Deno.env.get("DB_NAME"),
-      password: Deno.env.get("DB_PASSWORD"),
-    });
+  constructor(conection: Client) {
+    this.connection = conection;
   }
 
   /**

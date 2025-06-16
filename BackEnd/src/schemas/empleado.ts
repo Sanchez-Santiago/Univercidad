@@ -1,4 +1,4 @@
-import { z } from "https://esm.sh/zod@3.22.4";
+import { z } from "zod";
 import { PersonaSchema } from "./persona.ts";
 
 export const EmpleadoSchema = PersonaSchema.extend({

@@ -1,4 +1,4 @@
-import { z } from "https://esm.sh/zod@3.22.4";
+import { z } from "zod";
 
 export const PersonaSchema = z.object({
   idpersona: z.string().uuid({ message: "Debe ser un UUID válido" }), // Opcional si lo genera la DB, o requerido si viene del cliente

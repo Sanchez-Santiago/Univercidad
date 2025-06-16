@@ -8,27 +8,27 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema Universidad
+-- Schema bdss76zxe2tbtcsofere
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema Universidad
+-- Schema bdss76zxe2tbtcsofere
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `Universidad` ;
+CREATE SCHEMA IF NOT EXISTS `bdss76zxe2tbtcsofere` ;
 -- -----------------------------------------------------
--- Schema Universidad
+-- Schema bdss76zxe2tbtcsofere
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema Universidad
+-- Schema bdss76zxe2tbtcsofere
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `Universidad` ;
-USE `Universidad` ;
+CREATE SCHEMA IF NOT EXISTS `bdss76zxe2tbtcsofere` ;
+USE `bdss76zxe2tbtcsofere` ;
 
 -- -----------------------------------------------------
--- Table `Universidad`.`delegacion`
+-- Table `bdss76zxe2tbtcsofere`.`delegacion`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`delegacion` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`delegacion` (
   `iddelegacion` VARCHAR(38) NOT NULL,
   `nombre` VARCHAR(45) NOT NULL,
   `ubicacion` VARCHAR(100) NOT NULL,
@@ -45,9 +45,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `Universidad`.`facultad`
+-- Table `bdss76zxe2tbtcsofere`.`facultad`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`facultad` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`facultad` (
   `idfacultad` INT NOT NULL AUTO_INCREMENT,
   `nombreFacultad` VARCHAR(100) NOT NULL,
   `telefono` INT NOT NULL,
@@ -64,16 +64,16 @@ CREATE TABLE IF NOT EXISTS `Universidad`.`facultad` (
   INDEX `fk_facultad_delegacion1_idx` (`delegacion_iddelegacion` ASC) VISIBLE,
   CONSTRAINT `fk_facultad_delegacion1`
     FOREIGN KEY (`delegacion_iddelegacion`)
-    REFERENCES `Universidad`.`delegacion` (`iddelegacion`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`delegacion` (`iddelegacion`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `Universidad`.`carrera`
+-- Table `bdss76zxe2tbtcsofere`.`carrera`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`carrera` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`carrera` (
   `idcarrera` VARCHAR(38) NOT NULL,
   `facultad_id` INT NOT NULL,
   `titulo` VARCHAR(45) NOT NULL,
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `Universidad`.`carrera` (
   INDEX `fk_carrera_facultad1_idx` (`facultad_idfacultad` ASC, `facultad_delegacion_iddelegacion` ASC) VISIBLE,
   CONSTRAINT `fk_carrera_facultad1`
     FOREIGN KEY (`facultad_idfacultad` , `facultad_delegacion_iddelegacion`)
-    REFERENCES `Universidad`.`facultad` (`idfacultad` , `delegacion_iddelegacion`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`facultad` (`idfacultad` , `delegacion_iddelegacion`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -101,9 +101,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `Universidad`.`materia`
+-- Table `bdss76zxe2tbtcsofere`.`materia`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`materia` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`materia` (
   `idmateria` VARCHAR(38) NOT NULL,
   `carrera_id` VARCHAR(38) NOT NULL,
   `codigo` VARCHAR(20) NOT NULL,
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS `Universidad`.`materia` (
   INDEX `idx_materia_carrera` (`carrera_id` ASC) VISIBLE,
   CONSTRAINT `fk_materia_carrera`
     FOREIGN KEY (`carrera_id`)
-    REFERENCES `Universidad`.`carrera` (`idcarrera`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`carrera` (`idcarrera`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
 ENGINE = InnoDB
@@ -132,9 +132,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `Universidad`.`correlatividad`
+-- Table `bdss76zxe2tbtcsofere`.`correlatividad`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`correlatividad` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`correlatividad` (
   `idcorrelativa` INT NOT NULL AUTO_INCREMENT,
   `materia_id` VARCHAR(38) NOT NULL,
   `requisito_id` VARCHAR(38) NOT NULL,
@@ -145,12 +145,12 @@ CREATE TABLE IF NOT EXISTS `Universidad`.`correlatividad` (
   INDEX `idx_corr_requisito` (`requisito_id` ASC) VISIBLE,
   CONSTRAINT `fk_corr_materia`
     FOREIGN KEY (`materia_id`)
-    REFERENCES `Universidad`.`materia` (`idmateria`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`materia` (`idmateria`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_corr_requisito`
     FOREIGN KEY (`requisito_id`)
-    REFERENCES `Universidad`.`materia` (`idmateria`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`materia` (`idmateria`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
@@ -158,9 +158,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `Universidad`.`plan_estudio`
+-- Table `bdss76zxe2tbtcsofere`.`plan_estudio`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`plan_estudio` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`plan_estudio` (
   `idplan` INT NOT NULL AUTO_INCREMENT,
   `carrera_id` VARCHAR(38) NOT NULL,
   `version` VARCHAR(20) NOT NULL,
@@ -172,7 +172,7 @@ CREATE TABLE IF NOT EXISTS `Universidad`.`plan_estudio` (
   INDEX `idx_plan_carrera` (`carrera_id` ASC) VISIBLE,
   CONSTRAINT `fk_plan_carrera`
     FOREIGN KEY (`carrera_id`)
-    REFERENCES `Universidad`.`carrera` (`idcarrera`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`carrera` (`idcarrera`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
@@ -180,9 +180,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `Universidad`.`persona`
+-- Table `bdss76zxe2tbtcsofere`.`persona`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`persona` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`persona` (
   `idpersona` VARCHAR(38) NOT NULL,
   `nombre` VARCHAR(45) NOT NULL,
   `apellido` VARCHAR(45) NOT NULL,
@@ -204,9 +204,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `Universidad`.`estudiante`
+-- Table `bdss76zxe2tbtcsofere`.`estudiante`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`estudiante` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`estudiante` (
   `idpersona` VARCHAR(38) NOT NULL,
   `credito` INT NOT NULL DEFAULT 0,
   `notaPromedio` DECIMAL(3,2) NOT NULL DEFAULT 0.00,
@@ -221,12 +221,12 @@ CREATE TABLE IF NOT EXISTS `Universidad`.`estudiante` (
   INDEX `fk_estudiante_carrera` (`carrera_id` ASC) VISIBLE,
   CONSTRAINT `fk_estudiante_persona`
     FOREIGN KEY (`idpersona`)
-    REFERENCES `Universidad`.`persona` (`idpersona`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`persona` (`idpersona`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_estudiante_carrera`
     FOREIGN KEY (`carrera_id`)
-    REFERENCES `Universidad`.`carrera` (`idcarrera`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`carrera` (`idcarrera`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
 ENGINE = InnoDB
@@ -234,9 +234,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `Universidad`.`empleado`
+-- Table `bdss76zxe2tbtcsofere`.`empleado`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`empleado` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`empleado` (
   `persona` VARCHAR(38) NOT NULL,
   `titulo` VARCHAR(50) NULL DEFAULT NULL,
   `fechaIngreso` DATE NOT NULL,
@@ -247,7 +247,7 @@ CREATE TABLE IF NOT EXISTS `Universidad`.`empleado` (
   PRIMARY KEY (`persona`),
   CONSTRAINT `fk_empleado_persona`
     FOREIGN KEY (`persona`)
-    REFERENCES `Universidad`.`persona` (`idpersona`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`persona` (`idpersona`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
@@ -255,9 +255,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `Universidad`.`profesor`
+-- Table `bdss76zxe2tbtcsofere`.`profesor`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`profesor` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`profesor` (
   `empleado_id` VARCHAR(38) NOT NULL,
   `horaInicioDisponible` TIME NOT NULL,
   `horaFinDisponible` TIME NOT NULL,
@@ -266,7 +266,7 @@ CREATE TABLE IF NOT EXISTS `Universidad`.`profesor` (
   PRIMARY KEY (`empleado_id`),
   CONSTRAINT `fk_profesor_empleado`
     FOREIGN KEY (`empleado_id`)
-    REFERENCES `Universidad`.`empleado` (`persona`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`empleado` (`persona`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
@@ -274,9 +274,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `Universidad`.`administrativo`
+-- Table `bdss76zxe2tbtcsofere`.`administrativo`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`administrativo` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`administrativo` (
   `empleado_id` VARCHAR(38) NOT NULL,
   `sector` VARCHAR(45) NOT NULL,
   `departamento` VARCHAR(45) NOT NULL,
@@ -290,7 +290,7 @@ CREATE TABLE IF NOT EXISTS `Universidad`.`administrativo` (
   UNIQUE INDEX `uidx_administrativo_legajo` (`legajo` ASC) VISIBLE,
   CONSTRAINT `fk_administrativo_empleado`
     FOREIGN KEY (`empleado_id`)
-    REFERENCES `Universidad`.`empleado` (`persona`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`empleado` (`persona`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
@@ -298,9 +298,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `Universidad`.`dia`
+-- Table `bdss76zxe2tbtcsofere`.`dia`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`dia` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`dia` (
   `fecha` DATE NOT NULL,
   `nombreDia` VARCHAR(35) NOT NULL,
   `diaLaboral` TINYINT(1) NOT NULL,
@@ -312,9 +312,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `Universidad`.`clase`
+-- Table `bdss76zxe2tbtcsofere`.`clase`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`clase` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`clase` (
   `idclase` VARCHAR(38) NOT NULL,
   `estudiante_id` VARCHAR(38) NOT NULL,
   `dia` DATE NOT NULL,
@@ -333,22 +333,22 @@ CREATE TABLE IF NOT EXISTS `Universidad`.`clase` (
   INDEX `idx_clase_dia` (`dia` ASC) VISIBLE,
   CONSTRAINT `fk_clase_estudiante`
     FOREIGN KEY (`estudiante_id`)
-    REFERENCES `Universidad`.`estudiante` (`idpersona`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`estudiante` (`idpersona`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_clase_dia`
     FOREIGN KEY (`dia`)
-    REFERENCES `Universidad`.`dia` (`fecha`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`dia` (`fecha`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `fk_clase_profesor`
     FOREIGN KEY (`profesor_id`)
-    REFERENCES `Universidad`.`profesor` (`empleado_id`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`profesor` (`empleado_id`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `fk_clase_materia`
     FOREIGN KEY (`materia_id`)
-    REFERENCES `Universidad`.`materia` (`idmateria`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`materia` (`idmateria`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
 ENGINE = InnoDB
@@ -356,9 +356,9 @@ DEFAULT CHARACTER SET = utf8 PARTITION BY RANGE(YEAR(dia)) PARTITIONS 4( PARTITI
 
 
 -- -----------------------------------------------------
--- Table `Universidad`.`horario_clase`
+-- Table `bdss76zxe2tbtcsofere`.`horario_clase`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`horario_clase` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`horario_clase` (
   `idhorario` VARCHAR(38) NOT NULL,
   `idclase` VARCHAR(38) NOT NULL,
   `dia` DATE NOT NULL,
@@ -371,7 +371,7 @@ CREATE TABLE IF NOT EXISTS `Universidad`.`horario_clase` (
   INDEX `idx_horario_clase_idclase` (`idclase` ASC) VISIBLE,
   CONSTRAINT `fk_horario_clase_clase`
     FOREIGN KEY (`idclase`)
-    REFERENCES `Universidad`.`clase` (`idclase`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`clase` (`idclase`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
@@ -379,9 +379,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `Universidad`.`nota_clase`
+-- Table `bdss76zxe2tbtcsofere`.`nota_clase`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`nota_clase` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`nota_clase` (
   `idnota` VARCHAR(38) NOT NULL,
   `idclase` VARCHAR(38) NOT NULL,
   `estudiante_id` VARCHAR(38) NOT NULL,
@@ -397,17 +397,17 @@ CREATE TABLE IF NOT EXISTS `Universidad`.`nota_clase` (
   INDEX `fk_nota_clase_clase1_idx` (`clase_idclase` ASC) VISIBLE,
   CONSTRAINT `fk_nota_clase_clase`
     FOREIGN KEY (`idclase`)
-    REFERENCES `Universidad`.`clase` (`idclase`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`clase` (`idclase`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_nota_clase_estudiante`
     FOREIGN KEY (`estudiante_id`)
-    REFERENCES `Universidad`.`estudiante` (`idpersona`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`estudiante` (`idpersona`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_nota_clase_clase1`
     FOREIGN KEY (`clase_idclase`)
-    REFERENCES `Universidad`.`clase` (`idclase`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`clase` (`idclase`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -415,9 +415,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `Universidad`.`trabajo`
+-- Table `bdss76zxe2tbtcsofere`.`trabajo`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`trabajo` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`trabajo` (
   `empleado_id` VARCHAR(38) NOT NULL,
   `delegacion_id` VARCHAR(38) NOT NULL,
   `dia` DATE NOT NULL,
@@ -432,17 +432,17 @@ CREATE TABLE IF NOT EXISTS `Universidad`.`trabajo` (
   INDEX `idx_trabajo_dia` (`dia` ASC) VISIBLE,
   CONSTRAINT `fk_trabajo_empleado`
     FOREIGN KEY (`empleado_id`)
-    REFERENCES `Universidad`.`empleado` (`persona`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`empleado` (`persona`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_trabajo_delegacion`
     FOREIGN KEY (`delegacion_id`)
-    REFERENCES `Universidad`.`delegacion` (`iddelegacion`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`delegacion` (`iddelegacion`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `fk_trabajo_dia`
     FOREIGN KEY (`dia`)
-    REFERENCES `Universidad`.`dia` (`fecha`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`dia` (`fecha`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
 ENGINE = InnoDB
@@ -450,9 +450,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `Universidad`.`examen`
+-- Table `bdss76zxe2tbtcsofere`.`examen`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`examen` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`examen` (
   `dia` DATE NOT NULL,
   `tipo` ENUM('Parcial', 'Final', 'Recuperatorio') NOT NULL,
   `estudiante_id` VARCHAR(38) NOT NULL,
@@ -472,22 +472,22 @@ CREATE TABLE IF NOT EXISTS `Universidad`.`examen` (
   INDEX `idx_examen_materia` (`materia_id` ASC) VISIBLE,
   CONSTRAINT `fk_examen_estudiante`
     FOREIGN KEY (`estudiante_id`)
-    REFERENCES `Universidad`.`estudiante` (`idpersona`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`estudiante` (`idpersona`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_examen_profesor`
     FOREIGN KEY (`profesor_id`)
-    REFERENCES `Universidad`.`profesor` (`empleado_id`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`profesor` (`empleado_id`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `fk_examen_materia`
     FOREIGN KEY (`materia_id`)
-    REFERENCES `Universidad`.`materia` (`idmateria`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`materia` (`idmateria`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `fk_examen_dia`
     FOREIGN KEY (`dia`)
-    REFERENCES `Universidad`.`dia` (`fecha`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`dia` (`fecha`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
 ENGINE = InnoDB
@@ -495,9 +495,9 @@ DEFAULT CHARACTER SET = utf8 PARTITION BY RANGE(YEAR(dia)) PARTITIONS 4( PARTITI
 
 
 -- -----------------------------------------------------
--- Table `Universidad`.`usuario`
+-- Table `bdss76zxe2tbtcsofere`.`usuario`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Universidad`.`usuario` (
+CREATE TABLE IF NOT EXISTS `bdss76zxe2tbtcsofere`.`usuario` (
   `idusuario` INT NOT NULL AUTO_INCREMENT,
   `usuario` VARCHAR(50) NOT NULL,
   `hash_password` VARCHAR(255) NOT NULL,
@@ -510,13 +510,13 @@ CREATE TABLE IF NOT EXISTS `Universidad`.`usuario` (
   INDEX `idx_usuario_persona` (`persona_id` ASC) VISIBLE,
   CONSTRAINT `fk_usuario_persona`
     FOREIGN KEY (`persona_id`)
-    REFERENCES `Universidad`.`persona` (`idpersona`)
+    REFERENCES `bdss76zxe2tbtcsofere`.`persona` (`idpersona`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-USE `Universidad` ;
+USE `bdss76zxe2tbtcsofere` ;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

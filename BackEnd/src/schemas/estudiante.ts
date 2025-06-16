@@ -1,5 +1,5 @@
 // src/schemas/estudiante.ts
-import { z } from "https://esm.sh/zod@3.22.4";
+import { z } from "zod";
 import { PersonaSchema } from "./persona.ts";
 
 export const EstudianteSchema = PersonaSchema.extend({
@@ -9,7 +9,7 @@ export const EstudianteSchema = PersonaSchema.extend({
     .min(0)
     .max(10)
     .refine((n) => /^(\d+(\.\d{1,2})?)$/.test(n.toString())),
-  carrera_id: z.string().uuid(),
+  carrera_id: z.string().uuid().optional(),
   materiasAprobadas: z.number().int().nonnegative(),
   fechaIngreso: z
     .string()
