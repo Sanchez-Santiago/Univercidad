@@ -9,13 +9,12 @@ export class Models {
   constructor() {}
 
   async init() {
-    const url = new URL(Deno.env.get("DB_URL")!);
     const client = await new Client().connect({
-      hostname: Deno.env.get("DB_HOST")!,
-      username: Deno.env.get("DB_USER")!,
-      password: Deno.env.get("DB_PASSWORD")!,
-      db: url.pathname.substring(1), // Elimina la primera "/"
-      port: parseInt(url.port),
+      hostname: Deno.env.get("DB_HOST") ?? "localhost",
+      username: Deno.env.get("DB_USER") ?? "root",
+      db: Deno.env.get("DB_NAME") ?? "test",
+      password: Deno.env.get("DB_PASSWORD") ?? "",
+      port: parseInt(Deno.env.get("DB_PORT") ?? "3306"),
     });
 
     this.estudianteModel = new EstudianteModel(client); // ✅ modelo real
