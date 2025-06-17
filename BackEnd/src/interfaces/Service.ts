@@ -1,5 +1,5 @@
 // src/interfaces/ControllerInterface.ts
-export interface ControllerInterface<
+export interface ServiceInterface<
   T,
   CreateInput = T,
   UpdateInput = Partial<T>
@@ -27,7 +27,7 @@ export interface ControllerInterface<
   // 'update' recibe UpdateInput, parcialmente
   update(params: { id: string; data: UpdateInput }): Promise<T>;
 
-  delete(params: { id: string }): Promise<boolean>;
+  delete(params: { id: string }): Promise<{ success: boolean }>;
 
   searchByField<K extends keyof T>(params: {
     field: K;

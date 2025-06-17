@@ -1,5 +1,4 @@
 import { Application } from "oak";
-import profesorRouter from "./router/profesorRouter.ts";
 import estudianteRouter from "./router/estudianteRouter.ts";
 import routerHome from "./router/routerHome.ts";
 import { Models } from "./models/ModelsMySQL.ts";
@@ -30,9 +29,6 @@ app.use(async (ctx, next) => {
 
 app.use(routerHome.routes());
 app.use(routerHome.allowedMethods());
-
-app.use(profesorRouter.routes());
-app.use(profesorRouter.allowedMethods());
 
 app.use(estudianteRouter(estudianteModel).routes());
 app.use(estudianteRouter(estudianteModel).allowedMethods());

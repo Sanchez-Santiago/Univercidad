@@ -1,8 +1,8 @@
 import { ModelDB } from "../interfaces/Model.ts";
 import { Client } from "mysql";
-import { Estudiante, EstudianteUpdateInput } from "../schemas/estudiante.ts";
+import { Profesor, ProfesorUpdateInput } from "../schemas/profesor.ts";
 
-export class EstudianteModel implements ModelDB<Estudiante> {
+export class ProfesorModel implements ModelDB<Profesor> {
   connection: Client;
 
   constructor(conection: Client) {
@@ -28,7 +28,7 @@ export class EstudianteModel implements ModelDB<Estudiante> {
     materia?: string;
     carrera?: string;
     facultad?: string;
-  }): Promise<Estudiante[] | null> {
+  }): Promise<Profesor[] | null> {
     try {
       const offset = page * limit;
       const results = await this.connection.query(
@@ -47,7 +47,7 @@ export class EstudianteModel implements ModelDB<Estudiante> {
           offset,
         ]
       );
-      return results as Estudiante[];
+      return results as Profesor[];
     } catch (error) {
       console.error("Error en getAll:", error);
       return null;
@@ -67,14 +67,14 @@ export class EstudianteModel implements ModelDB<Estudiante> {
     name?: string;
     page?: number;
     limit?: number;
-  }): Promise<Estudiante[] | null> {
+  }): Promise<Profesor[] | null> {
     try {
       const offset = page * limit;
       const results = await this.connection.query(
         "SELECT * FROM estudiante WHERE nombre LIKE ? LIMIT ? OFFSET ?",
         [`%${name}%`, limit, offset]
       );
-      return results as Estudiante[];
+      return results as Profesor[];
     } catch (error) {
       console.error("Error en getName:", error);
       return null;
@@ -86,13 +86,13 @@ export class EstudianteModel implements ModelDB<Estudiante> {
    * @param params - Objeto con el ID del estudiante
    * @returns Promise con el estudiante encontrado o null si no existe
    */
-  async getById({ id }: { id: string }): Promise<Estudiante | null> {
+  async getById({ id }: { id: string }): Promise<Profesor | null> {
     try {
       const [result] = await this.connection.query(
         "SELECT * FROM estudiante WHERE id = ?",
         [id]
       );
-      return result as Estudiante;
+      return result as Profesor;
     } catch (error) {
       console.error("Error en getById:", error);
       return null;
@@ -104,13 +104,13 @@ export class EstudianteModel implements ModelDB<Estudiante> {
    * @param params - Objeto con el DNI del estudiante
    * @returns Promise con el estudiante encontrado o null si no existe
    */
-  async getByDni({ dni }: { dni: string }): Promise<Estudiante | null> {
+  async getByDni({ dni }: { dni: string }): Promise<Profesor | null> {
     try {
       const [result] = await this.connection.query(
         "SELECT * FROM estudiante WHERE dni = ?",
         [dni]
       );
-      return result as Estudiante;
+      return result as Profesor;
     } catch (error) {
       console.error("Error en getByDni:", error);
       return null;
@@ -122,13 +122,13 @@ export class EstudianteModel implements ModelDB<Estudiante> {
    * @param params - Objeto con el email del estudiante
    * @returns Promise con el estudiante encontrado o null si no existe
    */
-  async getByEmail({ email }: { email: string }): Promise<Estudiante | null> {
+  async getByEmail({ email }: { email: string }): Promise<Profesor | null> {
     try {
       const [result] = await this.connection.query(
         "SELECT * FROM estudiante WHERE email = ?",
         [email]
       );
-      return result as Estudiante;
+      return result as Profesor;
     } catch (error) {
       console.error("Error en getByEmail:", error);
       return null;
@@ -140,7 +140,7 @@ export class EstudianteModel implements ModelDB<Estudiante> {
    * @param params - Objeto con los datos del estudiante
    * @returns Promise con el estudiante creado
    */
-  async add({ input }: { input: Estudiante }): Promise<Estudiante> {
+  async add({ input }: { input: Profesor }): Promise<Profesor> {
     try {
       await this.connection.execute(
         `INSERT INTO estudiante(
@@ -161,13 +161,6 @@ export class EstudianteModel implements ModelDB<Estudiante> {
           input.telefonoAlternativo,
           input.genero,
           input.discapacidad,
-          input.credito,
-          input.notaPromedio,
-          input.carrera_id,
-          input.materiasAprobadas,
-          input.fechaIngreso,
-          input.estadoAcademico,
-          input.becado,
         ]
       );
       return input;
@@ -187,11 +180,10 @@ export class EstudianteModel implements ModelDB<Estudiante> {
     input,
   }: {
     id: string;
-    input: Partial<EstudianteUpdateInput>;
-  }): Promise<Estudiante> {
+    input: Partial<ProfesorUpdateInput>;
+  }): Promise<Profesor> {
     try {
-      const fieldMap: Record<keyof Estudiante, string> = {
-        idpersona: "idpersona",
+      const fieldMap: Partial<Record<keyof Profesor, string>> = {
         nombre: "nombre",
         apellido: "apellido",
         fechaNacimiento: "fecha_nacimiento",
@@ -201,19 +193,14 @@ export class EstudianteModel implements ModelDB<Estudiante> {
         telefonoAlternativo: "telefono_alternativo",
         genero: "genero",
         discapacidad: "discapacidad",
-        credito: "credito",
-        notaPromedio: "nota_promedio",
-        carrera_id: "carrera_id",
-        materiasAprobadas: "materias_aprobadas",
-        fechaIngreso: "fecha_ingreso",
-        estadoAcademico: "estado_academico",
-        becado: "becado",
+        titulo: "titulo",
+        departamento: "departamento",
       };
 
       const setClauses: string[] = [];
       const values: unknown[] = [];
 
-      (Object.keys(input) as Array<keyof EstudianteUpdateInput>).forEach(
+      (Object.keys(input) as Array<keyof ProfesorUpdateInput>).forEach(
         (field) => {
           if (field in fieldMap && input[field] !== undefined) {
             setClauses.push(`${fieldMap[field]} = ?`);
@@ -248,19 +235,19 @@ export class EstudianteModel implements ModelDB<Estudiante> {
    * @param params - Objeto con campo y valor a buscar
    * @returns Promise con array de estudiantes encontrados
    */
-  async searchByField<K extends keyof Estudiante>({
+  async searchByField<K extends keyof Profesor>({
     field,
     value,
   }: {
     field: K;
-    value: Estudiante[K];
-  }): Promise<Estudiante[]> {
+    value: Profesor[K];
+  }): Promise<Profesor[]> {
     try {
       const results = await this.connection.query(
         "SELECT * FROM estudiante WHERE ?? = ?",
         [field, value]
       );
-      return results as Estudiante[];
+      return results as Profesor[];
     } catch (error) {
       console.error("Error en searchByField:", error);
       return [];

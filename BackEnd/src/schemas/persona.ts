@@ -3,11 +3,6 @@ import { z } from "zod";
 export const PersonaSchema = z.object({
   idpersona: z.string().uuid({ message: "Debe ser un UUID válido" }), // Opcional si lo genera la DB, o requerido si viene del cliente
 
-  password: z
-    .string()
-    .min(8, { message: "La contraseña debe tener al menos 8 caracteres" })
-    .max(300, { message: "La contraseña no puede superar los 300 caracteres" }),
-
   nombre: z
     .string()
     .min(2, { message: "El nombre debe tener al menos 2 caracteres" })
@@ -43,11 +38,6 @@ export const PersonaSchema = z.object({
       message: "DNI inválido. Debe tener 7-10 dígitos sin guiones/espacios.",
     }),
 
-  email: z
-    .string()
-    .email({ message: "Debe ser un correo electrónico válido" })
-    .max(80, { message: "El email no puede superar los 80 caracteres" }),
-
   telefono: z.string().regex(/^\d{7,15}$/, {
     message: "El teléfono debe tener entre 7 y 15 dígitos numéricos",
   }),
@@ -74,15 +64,6 @@ export const PersonaSchema = z.object({
     .string()
     .max(100, {
       message: "La descripción de discapacidad no puede superar 100 caracteres",
-    })
-    .nullable()
-    .optional(),
-
-  fotoPerfilUrl: z
-    .string()
-    .url({ message: "Debe ser una URL válida para la foto de perfil" })
-    .max(2083, {
-      message: "La URL de la foto no puede superar 2083 caracteres",
     })
     .nullable()
     .optional(),

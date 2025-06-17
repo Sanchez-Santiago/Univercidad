@@ -2,29 +2,24 @@
 import { ModelDB } from "../interfaces/Model.ts";
 import { ControllerInterface } from "../interfaces/Controller.ts";
 import {
-  Estudiante,
-  EstudianteSchema,
-  EstudianteCreateSchema,
-  EstudianteCreateInput,
-  EstudianteUpdateInput,
-} from "../schemas/estudiante.ts";
-import { EstudianteSrvice } from "../service/EstudianteService.ts";
+  Profesor,
+  ProfesorCreateInput,
+  ProfesorSchema,
+  ProfesorUpdateInput,
+} from "../schemas/profesor.ts";
+import { ProfesorSrvice } from "../service/ProfesorService.ts";
 /**
  * Controller para operaciones CRUD sobre Estudiante.
  * - create usa EstudianteCreateInput
  * - update usa EstudianteUpdateInput
  */
-export class EstudianteController
+export class ProfesorController
   implements
-    ControllerInterface<
-      Estudiante,
-      EstudianteCreateInput,
-      EstudianteUpdateInput
-    >
+    ControllerInterface<Profesor, ProfesorCreateInput, ProfesorUpdateInput>
 {
-  private estudianteSrvice: EstudianteSrvice;
-  constructor(private model: ModelDB<Estudiante>) {
-    this.estudianteSrvice = new EstudianteSrvice(model);
+  private estudianteSrvice: ProfesorSrvice;
+  constructor(private model: ModelDB<Profesor>) {
+    this.estudianteSrvice = new ProfesorSrvice(model);
   }
 
   /**
@@ -36,7 +31,7 @@ export class EstudianteController
     limit?: number;
     facultad?: string;
     carrera?: string;
-  }): Promise<Estudiante[]> {
+  }): Promise<Profesor[]> {
     try {
       const list = await this.estudianteSrvice.getAll(params);
       return list ?? [];
@@ -49,7 +44,7 @@ export class EstudianteController
   /**
    * Obtener estudiante por ID
    */
-  async getById(params: { id: string }): Promise<Estudiante> {
+  async getById(params: { id: string }): Promise<Profesor> {
     try {
       const entity = await this.estudianteSrvice.getById(params);
       if (!entity) throw new Error("Estudiante no encontrado");
@@ -63,7 +58,7 @@ export class EstudianteController
   /**
    * Obtener estudiante por email
    */
-  async getByEmail(params: { email: string }): Promise<Estudiante> {
+  async getByEmail(params: { email: string }): Promise<Profesor> {
     try {
       const entity = await this.estudianteSrvice.getByEmail(params);
       if (!entity) throw new Error("Estudiante no encontrado");
@@ -81,7 +76,7 @@ export class EstudianteController
     name: string;
     page?: number;
     limit?: number;
-  }): Promise<Estudiante[]> {
+  }): Promise<Profesor[]> {
     try {
       const results = await this.getByName(params);
       return results ?? [];
@@ -94,7 +89,7 @@ export class EstudianteController
   /**
    * Obtener estudiante por DNI
    */
-  async getByDni(params: { dni: string }): Promise<Estudiante> {
+  async getByDni(params: { dni: string }): Promise<Profesor> {
     try {
       const dni = params.dni;
       if (!dni) throw new Error("DNI no proporcionado");
@@ -113,16 +108,16 @@ export class EstudianteController
    * - Genera idpersona y hashea contraseña
    * - Valida objeto completo con EstudianteSchema
    */
-  async create(params: { data: EstudianteCreateInput }): Promise<Estudiante> {
+  async create(params: { data: ProfesorCreateInput }): Promise<Profesor> {
     try {
       // 1) Validar solo los campos de creación
-      const validData = EstudianteCreateSchema.parse(params.data);
+      const validData = ProfesorSchema.parse(params.data);
 
       // 2) Generar UUID para idpersona y hashear contraseña
       const idpersona = crypto.randomUUID();
 
       // 3) Combinar con id y password, luego validar completo
-      const full = EstudianteSchema.parse({
+      const full = ProfesorSchema.parse({
         ...validData,
         idpersona,
       });
@@ -148,15 +143,15 @@ export class EstudianteController
    */
   async update(params: {
     id: string;
-    data: EstudianteUpdateInput;
-  }): Promise<Estudiante> {
+    data: ProfesorUpdateInput;
+  }): Promise<Profesor> {
     try {
       const existing = await this.estudianteSrvice.getById({ id: params.id });
       if (!existing) throw new Error("Estudiante no encontrado");
 
       // Merge datos
       const merged = { ...existing, ...params.data };
-      const validated = EstudianteSchema.parse(merged);
+      const validated = ProfesorSchema.parse(merged);
 
       return await this.estudianteSrvice.update({
         id: params.id,
@@ -184,10 +179,10 @@ export class EstudianteController
   /**
    * Buscar por campo específico
    */
-  async searchByField<K extends keyof Estudiante>(params: {
+  async searchByField<K extends keyof Profesor>(params: {
     field: K;
-    value: Estudiante[K];
-  }): Promise<Estudiante[]> {
+    value: Profesor[K];
+  }): Promise<Profesor[]> {
     try {
       return await this.model.searchByField(params);
     } catch (err) {

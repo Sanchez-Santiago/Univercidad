@@ -1,31 +1,21 @@
 // src/controllers/EstudianteController.ts
 import { ModelDB } from "../interfaces/Model.ts";
-import { ControllerInterface } from "../interfaces/Controller.ts";
+import { ServiceInterface } from "../interfaces/Service.ts";
 import {
-  Estudiante,
-  EstudianteSchema,
-  EstudianteCreateSchema,
-  EstudianteCreateInput,
-  EstudianteUpdateInput,
-} from "../schemas/estudiante.ts";
-import { EstudianteSrvice } from "../service/EstudianteService.ts";
+  Profesor,
+  ProfesorSchema,
+  ProfesorCreateSchema,
+  ProfesorCreateInput,
+  ProfesorUpdateInput,
+} from "../schemas/profesor.ts";
+
 /**
  * Controller para operaciones CRUD sobre Estudiante.
  * - create usa EstudianteCreateInput
  * - update usa EstudianteUpdateInput
  */
-export class EstudianteController
-  implements
-    ControllerInterface<
-      Estudiante,
-      EstudianteCreateInput,
-      EstudianteUpdateInput
-    >
-{
-  private estudianteSrvice: EstudianteSrvice;
-  constructor(private model: ModelDB<Estudiante>) {
-    this.estudianteSrvice = new EstudianteSrvice(model);
-  }
+export class ProfesorSrvice implements ServiceInterface<Profesor> {
+  constructor(private model: ModelDB<Profesor>) {}
 
   /**
    * Obtener lista de estudiantes con filtros opcionales
@@ -36,9 +26,9 @@ export class EstudianteController
     limit?: number;
     facultad?: string;
     carrera?: string;
-  }): Promise<Estudiante[]> {
+  }): Promise<Profesor[]> {
     try {
-      const list = await this.estudianteSrvice.getAll(params);
+      const list = await this.model.getAll(params);
       return list ?? [];
     } catch (err) {
       console.error("[EstudianteController#getAll]", err);
@@ -49,9 +39,9 @@ export class EstudianteController
   /**
    * Obtener estudiante por ID
    */
-  async getById(params: { id: string }): Promise<Estudiante> {
+  async getById(params: { id: string }): Promise<Profesor> {
     try {
-      const entity = await this.estudianteSrvice.getById(params);
+      const entity = await this.model.getById(params);
       if (!entity) throw new Error("Estudiante no encontrado");
       return entity;
     } catch (err) {
@@ -63,9 +53,9 @@ export class EstudianteController
   /**
    * Obtener estudiante por email
    */
-  async getByEmail(params: { email: string }): Promise<Estudiante> {
+  async getByEmail(params: { email: string }): Promise<Profesor> {
     try {
-      const entity = await this.estudianteSrvice.getByEmail(params);
+      const entity = await this.model.getByEmail(params);
       if (!entity) throw new Error("Estudiante no encontrado");
       return entity;
     } catch (err) {
@@ -81,9 +71,9 @@ export class EstudianteController
     name: string;
     page?: number;
     limit?: number;
-  }): Promise<Estudiante[]> {
+  }): Promise<Profesor[]> {
     try {
-      const results = await this.getByName(params);
+      const results = await this.model.getName(params);
       return results ?? [];
     } catch (err) {
       console.error("[EstudianteController#getByName]", err);
@@ -94,11 +84,11 @@ export class EstudianteController
   /**
    * Obtener estudiante por DNI
    */
-  async getByDni(params: { dni: string }): Promise<Estudiante> {
+  async getByDni(params: { dni: string }): Promise<Profesor> {
     try {
       const dni = params.dni;
       if (!dni) throw new Error("DNI no proporcionado");
-      const saved = await this.estudianteSrvice.getByDni({ dni });
+      const saved = await this.model.getByDni({ dni });
       if (!saved) throw new Error("Estudiante no encontrado");
       return saved;
     } catch (err) {
@@ -113,16 +103,16 @@ export class EstudianteController
    * - Genera idpersona y hashea contraseña
    * - Valida objeto completo con EstudianteSchema
    */
-  async create(params: { data: EstudianteCreateInput }): Promise<Estudiante> {
+  async create(params: { data: ProfesorCreateInput }): Promise<Profesor> {
     try {
       // 1) Validar solo los campos de creación
-      const validData = EstudianteCreateSchema.parse(params.data);
+      const validData = ProfesorCreateSchema.parse(params.data);
 
       // 2) Generar UUID para idpersona y hashear contraseña
       const idpersona = crypto.randomUUID();
 
       // 3) Combinar con id y password, luego validar completo
-      const full = EstudianteSchema.parse({
+      const full = ProfesorSchema.parse({
         ...validData,
         idpersona,
       });
@@ -133,7 +123,7 @@ export class EstudianteController
       }
 
       // 5) Guardar en la base de datos
-      return await this.create(params);
+      return await this.model.add({ input: full });
     } catch (err) {
       console.error("[EstudianteController#create]", err);
       throw err;
@@ -148,20 +138,17 @@ export class EstudianteController
    */
   async update(params: {
     id: string;
-    data: EstudianteUpdateInput;
-  }): Promise<Estudiante> {
+    data: ProfesorUpdateInput;
+  }): Promise<Profesor> {
     try {
-      const existing = await this.estudianteSrvice.getById({ id: params.id });
+      const existing = await this.model.getById({ id: params.id });
       if (!existing) throw new Error("Estudiante no encontrado");
 
       // Merge datos
       const merged = { ...existing, ...params.data };
-      const validated = EstudianteSchema.parse(merged);
+      const validated = ProfesorSchema.parse(merged);
 
-      return await this.estudianteSrvice.update({
-        id: params.id,
-        data: validated,
-      });
+      return await this.model.update({ id: params.id, input: validated });
     } catch (err) {
       console.error("[EstudianteController#update]", err);
       throw new Error("Error al actualizar estudiante");
@@ -171,10 +158,10 @@ export class EstudianteController
   /**
    * Eliminar estudiante por ID
    */
-  async delete(params: { id: string }): Promise<boolean> {
+  async delete(params: { id: string }): Promise<{ success: boolean }> {
     try {
-      const success = await this.estudianteSrvice.delete(params);
-      return success.success;
+      const success = await this.model.delete(params);
+      return { success } as { success: boolean };
     } catch (err) {
       console.error("[EstudianteController#delete]", err);
       throw new Error("Error al eliminar estudiante");
@@ -184,10 +171,10 @@ export class EstudianteController
   /**
    * Buscar por campo específico
    */
-  async searchByField<K extends keyof Estudiante>(params: {
+  async searchByField<K extends keyof Profesor>(params: {
     field: K;
-    value: Estudiante[K];
-  }): Promise<Estudiante[]> {
+    value: Profesor[K];
+  }): Promise<Profesor[]> {
     try {
       return await this.model.searchByField(params);
     } catch (err) {

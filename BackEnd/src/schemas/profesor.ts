@@ -18,3 +18,5 @@ export const ProfesorUpdateSchema = ProfesorCreateSchema.partial();
 export type Profesor = z.infer<typeof ProfesorSchema>;
 export type ProfesorreateInput = z.infer<typeof ProfesorCreateSchema>;
 export type ProfesorUpdateInput = z.infer<typeof ProfesorUpdateSchema>;
+export type ProfesorCreateInput = z.infer<typeof ProfesorCreateSchema>;
+export type ProfesorSchema = z.infer<typeof ProfesorSchema>;
